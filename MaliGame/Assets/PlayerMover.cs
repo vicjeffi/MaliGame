@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 
@@ -9,16 +10,20 @@ public class PlayerMover : MonoBehaviour
     Vector3 moucePosition;
     Vector3 whereToPush;
     Vector3 newCamPosition;
+    Vector3 wayTestStartPosition;
 
     [SerializeField] LayerMask layer;
     [SerializeField] Material[] randomMaterials;
     [SerializeField] Rigidbody r;
     
     [SerializeField] Material FreezeMaterial;
+    [SerializeField] Material StandartMaterial;
     [SerializeField] ParticleSystem FreezeParticle;
     [SerializeField] ParticleSystem DeadParticle;
+
     [SerializeField] GameObject wayTest;
-    Vector3 wayTestStartPosition;
+
+    Color MyColorNow;
 
     //animators
     [SerializeField] Animator CamAnimator;
@@ -40,20 +45,21 @@ public class PlayerMover : MonoBehaviour
 
     public int FreezePower = 2;
 
-    private Material MyMaterialNow;
     void Start()
     {
         wayTestStartPosition = wayTest.transform.position;
-
+        MyColorNow = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1.0f);
         //set random material
-        Color MyColorNow = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1.0f); 
         this.GetComponent<Renderer>().material.color = MyColorNow;
-        var MyMaterialNow = this.GetComponent<Renderer>().material;
         //...
     }
 
     void Update()
     {
+        if (Input.GetMouseButtonUp(0) && canPlay)
+        {
+            wayTest.transform.position = wayTestStartPosition;
+        }
         //camera mover
         if (isCameraMove)
         {
@@ -70,7 +76,7 @@ public class PlayerMover : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || isGameFinished == false)
         {
             goToSide = !goToSide;
             if (goToSide)
@@ -80,6 +86,13 @@ public class PlayerMover : MonoBehaviour
             else
             {
                 CamAnimator.SetBool("GoToSide", false);
+            }
+        }
+        if (isGameFinished)
+        {
+            if (Input.GetKeyDown(KeyCode.Space) || isGameFinished == false)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             }
         }
         //...
@@ -98,10 +111,7 @@ public class PlayerMover : MonoBehaviour
                 r.AddForce((whereToPush - transform.position).normalized * speed);
             }
         }
-        if (Input.GetMouseButtonUp(0) && canPlay)
-        {
-            wayTest.transform.position = wayTestStartPosition;
-        }
+        
         //...
     }
 
@@ -113,17 +123,19 @@ public class PlayerMover : MonoBehaviour
         }
         if (this.CompareTag("Player") && other.CompareTag("Killing"))
         {
-            canPlay = false;
-            DeadParticle.Play();
-            CamAnimator.SetBool("canPlay", false);
-            PlayerAnimator.SetBool("canPlay", false);
-            Destroy(wayTest);
+            if (canPlay)
+            {
+                canPlay = false;
+                DeadParticle.Play();
+                CamAnimator.SetBool("canPlay", false);
+                PlayerAnimator.SetBool("canPlay", false);
+                Destroy(wayTest);
+            }
         }
         if (this.CompareTag("Player") && other.CompareTag("Finish"))
         {
             //new scene
-            
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            isGameFinished = true;
             //...
         }
         if (this.CompareTag("Player") && other.CompareTag("Freeze"))
@@ -144,20 +156,19 @@ public class PlayerMover : MonoBehaviour
             if (isFreeze)
             {
                 speed = speed * FreezePower;
-                this.GetComponent<Renderer>().material = MyMaterialNow;
+                this.GetComponent<Renderer>().material = StandartMaterial;
+                this.GetComponent<Renderer>().material.color = MyColorNow;
                 FreezeParticle.Play();
                 isFreeze = false;
             }
             //...
 
             //smaller;
-            this.transform.localScale = this.transform.lossyScale / 2;
             speed += 4;
             if((r.drag - 0.5f) >= 0)
             {
                 r.drag -= 0.5f;
             }
-            GameObject b = GameObject.FindGameObjectWithTag("Booster");
             Destroy(FindClosestObjByTag("Booster"));
             //...
         }
@@ -167,14 +178,14 @@ public class PlayerMover : MonoBehaviour
             if (isFreeze)
             {
                 speed = speed * FreezePower;
-                this.GetComponent<Renderer>().material = new Material(MyMaterialNow);
+                this.GetComponent<Renderer>().material = StandartMaterial;
+                this.GetComponent<Renderer>().material.color = MyColorNow;
                 FreezeParticle.Play();
                 isFreeze = false;
             }
             //...
 
             //bigger;
-            this.transform.localScale = this.transform.lossyScale * 2;
             //add mass and lower speed
             r.drag += 0.5f;
 
@@ -192,7 +203,6 @@ public class PlayerMover : MonoBehaviour
             }
             
             //...
-            this.GetComponent<Renderer>().material = MyMaterialNow;
             Destroy(FindClosestObjByTag("UnBooster"));
             //...
         }
