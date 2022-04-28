@@ -32,6 +32,7 @@ public class PlayerMover : MonoBehaviour
     //bool
     [SerializeField] bool isCameraMove = true;
     bool isFreeze = false;
+    bool isGameFinished = false;
     public bool canPlay = true;
     //...
 
@@ -41,8 +42,9 @@ public class PlayerMover : MonoBehaviour
     void Start()
     {
         //set random material
-        MyMaterialNow = randomMaterials[Random.Range(0, randomMaterials.Length)];
-        this.GetComponent<Renderer>().material = MyMaterialNow;
+        Color MyColorNow = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1.0f); 
+        this.GetComponent<Renderer>().material.color = MyColorNow;
+        var MyMaterialNow = this.GetComponent<Renderer>().material;
         //...
     }
 
@@ -99,6 +101,7 @@ public class PlayerMover : MonoBehaviour
         if (this.CompareTag("Player") && other.CompareTag("Finish"))
         {
             //new scene
+            
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             //...
         }
@@ -122,6 +125,7 @@ public class PlayerMover : MonoBehaviour
                 speed = speed * FreezePower;
                 this.GetComponent<Renderer>().material = MyMaterialNow;
                 FreezeParticle.Play();
+                isFreeze = false;
             }
             //...
 
@@ -144,6 +148,7 @@ public class PlayerMover : MonoBehaviour
                 speed = speed * FreezePower;
                 this.GetComponent<Renderer>().material = MyMaterialNow;
                 FreezeParticle.Play();
+                isFreeze = false;
             }
             //...
 
