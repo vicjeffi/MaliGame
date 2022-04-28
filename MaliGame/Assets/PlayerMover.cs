@@ -18,6 +18,7 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] ParticleSystem FreezeParticle;
     [SerializeField] ParticleSystem DeadParticle;
     [SerializeField] GameObject wayTest;
+    Vector3 wayTestStartPosition;
 
     //animators
     [SerializeField] Animator CamAnimator;
@@ -32,6 +33,7 @@ public class PlayerMover : MonoBehaviour
     //bool
     [SerializeField] bool isCameraMove = true;
     bool isFreeze = false;
+    bool goToSide = false;
     bool isGameFinished = false;
     public bool canPlay = true;
     //...
@@ -41,6 +43,8 @@ public class PlayerMover : MonoBehaviour
     private Material MyMaterialNow;
     void Start()
     {
+        wayTestStartPosition = wayTest.transform.position;
+
         //set random material
         Color MyColorNow = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1.0f); 
         this.GetComponent<Renderer>().material.color = MyColorNow;
@@ -53,6 +57,7 @@ public class PlayerMover : MonoBehaviour
         //camera mover
         if (isCameraMove)
         {
+            // тут все нахуй переделать надо чтоб сохранялось растояние определенное и он перемещался только по нему ВОООТ
             newCamPosition.x = this.transform.position.x + 8;
             newCamPosition.z = this.transform.position.z - 8;
             newCamPosition.y = Camera.main.transform.position.y;
@@ -64,6 +69,18 @@ public class PlayerMover : MonoBehaviour
         if (Input.GetKey(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            goToSide = !goToSide;
+            if (goToSide)
+            {
+                CamAnimator.SetBool("GoToSide", true);
+            }
+            else
+            {
+                CamAnimator.SetBool("GoToSide", false);
+            }
         }
         //...
     }
@@ -80,6 +97,10 @@ public class PlayerMover : MonoBehaviour
                 wayTest.transform.position = raycastHit.point;
                 r.AddForce((whereToPush - transform.position).normalized * speed);
             }
+        }
+        if (Input.GetMouseButtonUp(0) && canPlay)
+        {
+            wayTest.transform.position = wayTestStartPosition;
         }
         //...
     }
@@ -146,7 +167,7 @@ public class PlayerMover : MonoBehaviour
             if (isFreeze)
             {
                 speed = speed * FreezePower;
-                this.GetComponent<Renderer>().material = MyMaterialNow;
+                this.GetComponent<Renderer>().material = new Material(MyMaterialNow);
                 FreezeParticle.Play();
                 isFreeze = false;
             }
