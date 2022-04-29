@@ -11,11 +11,14 @@ public class PlayerMover : MonoBehaviour
     Vector3 whereToPush;
     Vector3 newCamPosition;
     Vector3 wayTestStartPosition;
+    string[] FinishText = { "Lettssss goo!", "Nice cosk!", "Finish!", "Nice one!", "Good job!", "Amaizing!", "U WIN!"};
 
     [SerializeField] LayerMask layer;
     [SerializeField] Material[] randomMaterials;
     [SerializeField] Rigidbody r;
-    
+    [SerializeField] Text textStatus;
+    [SerializeField] Text textR2Restart;
+
     [SerializeField] Material FreezeMaterial;
     [SerializeField] Material StandartMaterial;
     [SerializeField] ParticleSystem FreezeParticle;
@@ -76,7 +79,7 @@ public class PlayerMover : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
-        if (Input.GetKeyDown(KeyCode.Space) || isGameFinished == false)
+        if (Input.GetKeyDown(KeyCode.Space) && isGameFinished == false)
         {
             goToSide = !goToSide;
             if (goToSide)
@@ -90,7 +93,7 @@ public class PlayerMover : MonoBehaviour
         }
         if (isGameFinished)
         {
-            if (Input.GetKeyDown(KeyCode.Space) || isGameFinished == false)
+            if (Input.GetKey(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             }
@@ -134,8 +137,16 @@ public class PlayerMover : MonoBehaviour
         }
         if (this.CompareTag("Player") && other.CompareTag("Finish"))
         {
-            //new scene
+            //change colider text and set bool
+            textStatus.text = FinishText[Random.Range(0, FinishText.Length - 1)];
+            textR2Restart.text = "Press any key";
+
+            textR2Restart.color = MyColorNow;
+            textStatus.color = MyColorNow;
+
             isGameFinished = true;
+            CamAnimator.SetBool("canPlay", false);
+            canPlay = false;
             //...
         }
         if (this.CompareTag("Player") && other.CompareTag("Freeze"))
