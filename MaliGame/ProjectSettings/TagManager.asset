@@ -13,6 +13,8 @@ TagManager:
   - UnBooster
   - Killing
   - Falling
+  - SpecialCollor
+  - RandomCollor
   layers:
   - Default
   - TransparentFX

@@ -9,7 +9,6 @@ public class PlayerMover : MonoBehaviour
 {
     Vector3 moucePosition;
     Vector3 whereToPush;
-    Vector3 newCamPosition;
     Vector3 wayTestStartPosition;
     string[] FinishText = { "Lettssss goo!", "Nice cosk!", "Finish!", "Nice one!", "Good job!", "Amaizing!", "U WIN!"};
 
@@ -25,12 +24,14 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] ParticleSystem DeadParticle;
 
     [SerializeField] GameObject wayTest;
+    [SerializeField] Animator CamAnimator;
+    [SerializeField] Animator PlayerAnimator;
+
 
     Color MyColorNow;
 
     //animators
-    [SerializeField] Animator CamAnimator;
-    [SerializeField] Animator PlayerAnimator;
+
     //...
 
     //static player speed for reset
@@ -39,9 +40,7 @@ public class PlayerMover : MonoBehaviour
     //...
 
     //bool
-    [SerializeField] bool isCameraMove = true;
     bool isFreeze = false;
-    bool goToSide = false;
     bool isGameFinished = false;
     public bool canPlay = true;
     //...
@@ -63,37 +62,14 @@ public class PlayerMover : MonoBehaviour
         {
             wayTest.transform.position = wayTestStartPosition;
         }
-        //camera mover
-        if (isCameraMove)
-        {
-            // тут все нахуй переделать надо чтоб сохранялось растояние определенное и он перемещался только по нему ВОООТ
-            newCamPosition.x = this.transform.position.x + 8;
-            newCamPosition.z = this.transform.position.z - 8;
-            newCamPosition.y = Camera.main.transform.position.y;
-            Camera.main.transform.position = newCamPosition;
-        }
-        //...
-
         //reset scene
         if (Input.GetKey(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
-        if (Input.GetKeyDown(KeyCode.Space) && isGameFinished == false)
-        {
-            goToSide = !goToSide;
-            if (goToSide)
-            {
-                CamAnimator.SetBool("GoToSide", true);
-            }
-            else
-            {
-                CamAnimator.SetBool("GoToSide", false);
-            }
-        }
         if (isGameFinished)
         {
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.anyKey &&!Input.GetMouseButton(0))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             }
@@ -190,7 +166,7 @@ public class PlayerMover : MonoBehaviour
             {
                 speed = speed * FreezePower;
                 this.GetComponent<Renderer>().material = StandartMaterial;
-                this.GetComponent<Renderer>().material.color = MyColorNow;
+                this.GetComponent<Renderer>().material.color = MyColorNow  ;
                 FreezeParticle.Play();
                 isFreeze = false;
             }
@@ -237,12 +213,5 @@ public class PlayerMover : MonoBehaviour
             }
         }
         return closest;
-    }
-
-    public void PlayerDead()
-    {
-        canPlay = false;
-        DeadParticle.Play();
-        PlayerAnimator.SetBool("canPlay", false);
     }
 }
