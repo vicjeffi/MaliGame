@@ -10,7 +10,8 @@ public class PlayerMover : MonoBehaviour
     Vector3 moucePosition;
     Vector3 whereToPush;
     Vector3 wayTestStartPosition;
-    string[] FinishText = { "Lettssss goo!", "Nice cosk!", "Finish!", "Nice one!", "Good job!", "Amaizing!", "U WIN!"};
+    string[] FinishText = { "Lettssss goo!", "Nice coooge!", "Finish!", "Nice one!", "Good job!", "Amaizing!", "U WIN!", "Impressive!", "001011010011011011", "Nice!"};
+    string[] DeadText = { "U DEAD!", "HAHAHAH LOSER!", "sOoooO BAD!", "HAHAHAHA NOT EAVEN CLOSE", "sck bools", "sooo cringe"};
 
     [SerializeField] LayerMask layer;
     [SerializeField] Material[] randomMaterials;
@@ -106,7 +107,9 @@ public class PlayerMover : MonoBehaviour
             {
                 canPlay = false;
                 DeadParticle.Play();
-                CamAnimator.SetBool("canPlay", false);
+                textStatus.text = DeadText[Random.Range(0, FinishText.Length - 1)];
+                if (isGameFinished == false)
+                    CamAnimator.SetBool("canPlay", false);
                 PlayerAnimator.SetBool("canPlay", false);
                 Destroy(wayTest);
             }
