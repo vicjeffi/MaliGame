@@ -25,14 +25,10 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] ParticleSystem DeadParticle;
 
     [SerializeField] GameObject wayTest;
-    [SerializeField] Animator CamAnimator;
-    [SerializeField] Animator PlayerAnimator;
-
-
-    Color MyColorNow;
 
     //animators
-
+    [SerializeField] Animator CamAnimator;
+    [SerializeField] Animator PlayerAnimator;
     //...
 
     //static player speed for reset
@@ -51,10 +47,6 @@ public class PlayerMover : MonoBehaviour
     void Start()
     {
         wayTestStartPosition = wayTest.transform.position;
-        MyColorNow = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1.0f);
-        //set random material
-        this.GetComponent<Renderer>().material.color = MyColorNow;
-        //...
     }
 
     void Update()
@@ -120,8 +112,8 @@ public class PlayerMover : MonoBehaviour
             textStatus.text = FinishText[Random.Range(0, FinishText.Length - 1)];
             textR2Restart.text = "Press any key";
 
-            textR2Restart.color = MyColorNow;
-            textStatus.color = MyColorNow;
+            textR2Restart.color = GetComponent<Renderer>().material.color;
+            textStatus.color = GetComponent<Renderer>().material.color;
 
             isGameFinished = true;
             CamAnimator.SetBool("canPlay", false);
@@ -147,7 +139,6 @@ public class PlayerMover : MonoBehaviour
             {
                 speed = speed * FreezePower;
                 this.GetComponent<Renderer>().material = StandartMaterial;
-                this.GetComponent<Renderer>().material.color = MyColorNow;
                 FreezeParticle.Play();
                 isFreeze = false;
             }
@@ -169,7 +160,6 @@ public class PlayerMover : MonoBehaviour
             {
                 speed = speed * FreezePower;
                 this.GetComponent<Renderer>().material = StandartMaterial;
-                this.GetComponent<Renderer>().material.color = MyColorNow  ;
                 FreezeParticle.Play();
                 isFreeze = false;
             }
