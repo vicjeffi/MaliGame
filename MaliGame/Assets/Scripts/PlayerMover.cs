@@ -94,20 +94,16 @@ public class PlayerMover : MonoBehaviour
     {
         if (this.CompareTag("Player") && other.CompareTag("Falling"))
         {
-
+            if (canPlay)
+            {
+                PlayerDie();
+            }
         }
         if (this.CompareTag("Player") && other.CompareTag("Killing"))
         {
             if (canPlay)
             {
-                canPlay = false;
-                DeadParticle.Play();
-                textStatus.text = DeadText[Random.Range(0, FinishText.Length - 1)];
-                if (isGameFinished == false)
-                    CamAnimator.SetBool("canPlay", false);
-                PlayerAnimator.SetBool("canPlay", false);
-                DeadCamEffect.SetBool("canPlay", false);
-                Destroy(wayTest);
+                PlayerDie();
             }
         }
         if (this.CompareTag("Player") && other.CompareTag("Finish"))
@@ -214,5 +210,17 @@ public class PlayerMover : MonoBehaviour
             }
         }
         return closest;
+    }
+
+    public void PlayerDie()
+    {
+        canPlay = false;
+        DeadParticle.Play();
+        textStatus.text = DeadText[Random.Range(0, DeadText.Length - 1)];
+        if (isGameFinished == false)
+            CamAnimator.SetBool("canPlay", false);
+        PlayerAnimator.SetBool("canPlay", false);
+        DeadCamEffect.SetBool("canPlay", false);
+        Destroy(wayTest);
     }
 }
