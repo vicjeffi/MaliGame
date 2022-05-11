@@ -29,6 +29,9 @@ public class PlayerMover : MonoBehaviour
     //animators
     [SerializeField] Animator CamAnimator;
     [SerializeField] Animator PlayerAnimator;
+
+    [SerializeField] Animator DeadCamEffect;
+    [SerializeField] Animator FreezeCamEffect;
     //...
 
     //static player speed for reset
@@ -103,6 +106,7 @@ public class PlayerMover : MonoBehaviour
                 if (isGameFinished == false)
                     CamAnimator.SetBool("canPlay", false);
                 PlayerAnimator.SetBool("canPlay", false);
+                DeadCamEffect.SetBool("canPlay", false);
                 Destroy(wayTest);
             }
         }
@@ -117,6 +121,7 @@ public class PlayerMover : MonoBehaviour
 
             isGameFinished = true;
             CamAnimator.SetBool("canPlay", false);
+            FreezeCamEffect.SetBool("isFreeze", false);
             canPlay = false;
             //...
         }
@@ -129,6 +134,7 @@ public class PlayerMover : MonoBehaviour
                 this.GetComponent<Renderer>().material = FreezeMaterial;
                 FreezeParticle.Play();
                 isFreeze = true;
+                FreezeCamEffect.SetBool("isFreeze", true);
             }
             //...
         }
@@ -141,6 +147,7 @@ public class PlayerMover : MonoBehaviour
                 this.GetComponent<Renderer>().material = StandartMaterial;
                 FreezeParticle.Play();
                 isFreeze = false;
+                FreezeCamEffect.SetBool("isFreeze", false);
             }
             //...
 
@@ -162,6 +169,7 @@ public class PlayerMover : MonoBehaviour
                 this.GetComponent<Renderer>().material = StandartMaterial;
                 FreezeParticle.Play();
                 isFreeze = false;
+                FreezeCamEffect.SetBool("isFreeze", false);
             }
             //...
 
