@@ -10,11 +10,11 @@ public class PlayerMover : MonoBehaviour
     Vector3 moucePosition;
     Vector3 whereToPush;
     Vector3 wayTestStartPosition;
+    [SerializeField] Sun sunMover;
     string[] FinishText = { "Lettssss goo!", "Nice coooge!", "Finish!", "Nice one!", "Good job!", "Amaizing!", "U WIN!", "Impressive!", "001011010011011011", "Nice!"};
     string[] DeadText = { "U DEAD!", "HAHAHAH LOSER!", "sOoooO BAD!", "HAHAHAHA NOT EAVEN CLOSE", "sck bools", "sooo cringe"};
 
     [SerializeField] LayerMask layer;
-    [SerializeField] Material[] randomMaterials;
     [SerializeField] Rigidbody r;
     [SerializeField] Text textStatus;
     [SerializeField] Text textR2Restart;
@@ -23,6 +23,7 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] Material StandartMaterial;
     [SerializeField] ParticleSystem FreezeParticle;
     [SerializeField] ParticleSystem DeadParticle;
+    [SerializeField] ParticleSystem DeadParticle_InWater;
 
     [SerializeField] GameObject wayTest;
 
@@ -62,6 +63,7 @@ public class PlayerMover : MonoBehaviour
         if (Input.GetKey(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SaveSunPositon(sunMover.currentTimeOfDay);
         }
         if (isGameFinished)
         {
@@ -96,29 +98,22 @@ public class PlayerMover : MonoBehaviour
         {
             if (canPlay)
             {
-                PlayerDie();
+                PlayerDie(true);
+                PlayerPrefs.SetFloat("SunPosition", sunMover.currentTimeOfDay);
             }
         }
         if (this.CompareTag("Player") && other.CompareTag("Killing"))
         {
             if (canPlay)
             {
-                PlayerDie();
+                PlayerDie(false);
+                PlayerPrefs.SetFloat("SunPosition", sunMover.currentTimeOfDay);
             }
         }
         if (this.CompareTag("Player") && other.CompareTag("Finish"))
         {
             //change colider text and set bool
-            textStatus.text = FinishText[Random.Range(0, FinishText.Length - 1)];
-            textR2Restart.text = "Press any key";
-
-            textR2Restart.color = GetComponent<Renderer>().material.color;
-            textStatus.color = GetComponent<Renderer>().material.color;
-
-            isGameFinished = true;
-            CamAnimator.SetBool("canPlay", false);
-            FreezeCamEffect.SetBool("isFreeze", false);
-            canPlay = false;
+            PlayerWin();
             //...
         }
         if (this.CompareTag("Player") && other.CompareTag("Freeze"))
@@ -212,15 +207,42 @@ public class PlayerMover : MonoBehaviour
         return closest;
     }
 
-    public void PlayerDie()
+    public void PlayerDie(bool IsWater)
     {
         canPlay = false;
-        DeadParticle.Play();
+        if (IsWater)
+        {
+            DeadParticle_InWater.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            DeadParticle_InWater.Play();
+        }
+        else
+            DeadParticle.Play();
         textStatus.text = DeadText[Random.Range(0, DeadText.Length - 1)];
         if (isGameFinished == false)
             CamAnimator.SetBool("canPlay", false);
         PlayerAnimator.SetBool("canPlay", false);
         DeadCamEffect.SetBool("canPlay", false);
         Destroy(wayTest);
+        SaveSunPositon(sunMover.currentTimeOfDay);
+    }
+
+    public void PlayerWin()
+    {
+        textStatus.text = FinishText[Random.Range(0, FinishText.Length - 1)];
+        textR2Restart.text = "Press any key";
+
+        textR2Restart.color = GetComponent<Renderer>().material.color;
+        textStatus.color = GetComponent<Renderer>().material.color;
+
+        isGameFinished = true;
+        CamAnimator.SetBool("canPlay", false);
+        FreezeCamEffect.SetBool("isFreeze", false);
+        canPlay = false;
+        SaveSunPositon(sunMover.currentTimeOfDay);
+    }
+
+    public void SaveSunPositon(float position) // SunPosition
+    {
+        PlayerPrefs.SetFloat("SunPosition", position);
     }
 }

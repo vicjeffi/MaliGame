@@ -11,7 +11,7 @@ public class Timer : MonoBehaviour
     public float startTime = 10f;
     [SerializeField] bool isGoing = false;
     public bool isEnded = false;
-    string[] randomText = { "Go faster! ", "Faster: ", "Score: ", "you are too slow: "};
+    string[] randomText = { "Go faster! ", "Faster! ", "Faster!!", "Faster!!!" };
     public float endTime = 0f;
 
     string mainText = "Score: ";
@@ -27,7 +27,7 @@ public class Timer : MonoBehaviour
     {
         while (endTime >= 0)
         {
-            if (endTime <= 10)
+            if (endTime <= 10 && pm.canPlay)
                 mainText = randomText[UnityEngine.Random.Range(0, randomText.Length - 1)];
             text.text = mainText + Convert.ToString(endTime);
             if (isGoing && pm.canPlay)
@@ -38,7 +38,7 @@ public class Timer : MonoBehaviour
         isGoing = false;
         isEnded = true;
         endTime = 0;
-        pm.PlayerDie();
+        pm.PlayerDie(false);
     }
 
     public void StartTimer()

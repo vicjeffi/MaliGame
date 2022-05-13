@@ -24,7 +24,8 @@ public class MenuSkript : MonoBehaviour
         if (this && other.CompareTag("Player"))
         {
             anim_onCube.SetBool("Disapear", true);
-            anim_onText.SetBool("Disapear", true);
+            if(anim_onText != null)
+                anim_onText.SetBool("Disapear", true);
         }
     }
 }

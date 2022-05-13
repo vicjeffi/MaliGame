@@ -13,7 +13,8 @@ public class Sun : MonoBehaviour
     float sunInitialIntensity;
 
     void Start() 
-    { 
+    {
+        currentTimeOfDay = PlayerPrefs.GetFloat("SunPosition");
         sunInitialIntensity = sun.intensity; 
     }
 
