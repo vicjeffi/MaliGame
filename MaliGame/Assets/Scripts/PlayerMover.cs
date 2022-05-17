@@ -239,6 +239,7 @@ public class PlayerMover : MonoBehaviour
         FreezeCamEffect.SetBool("isFreeze", false);
         canPlay = false;
         SaveSunPositon(sunMover.currentTimeOfDay);
+        PlayerPrefs.SetInt("lvl", SceneManager.GetActiveScene().buildIndex);
     }
 
     public void SaveSunPositon(float position) // SunPosition
