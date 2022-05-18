@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuButton : MonoBehaviour
 {
+    public ButtManager bt;
     public void LoadSchene(int num)
     {
         SceneManager.LoadScene(num);
@@ -14,5 +15,6 @@ public class MenuButton : MonoBehaviour
     public void ResetSchene()
     {
         PlayerPrefs.SetInt("lvl", 0);
+        bt.resetButtons();
     }
 }

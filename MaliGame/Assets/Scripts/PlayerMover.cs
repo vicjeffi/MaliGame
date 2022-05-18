@@ -65,6 +65,11 @@ public class PlayerMover : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             SaveSunPositon(sunMover.currentTimeOfDay);
         }
+        if (Input.GetKey(KeyCode.M))
+        {
+            SceneManager.LoadScene(0);
+            SaveSunPositon(sunMover.currentTimeOfDay);
+        }
         if (isGameFinished)
         {
             if (Input.anyKey &&!Input.GetMouseButton(0))
