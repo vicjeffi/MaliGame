@@ -47,6 +47,7 @@ public class PlayerMover : MonoBehaviour
     //...
 
     public int FreezePower = 2;
+    int lastLvlNum = 5;
 
     void Start()
     {
@@ -55,6 +56,10 @@ public class PlayerMover : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey("escape") && SceneManager.GetActiveScene().buildIndex == 0)  // если нажата клавиша Esc (Escape)
+        {
+            Application.Quit();    // закрыть приложение
+        }
         if (Input.GetMouseButtonUp(0) && canPlay)
         {
             wayTest.transform.position = wayTestStartPosition;
@@ -74,7 +79,10 @@ public class PlayerMover : MonoBehaviour
         {
             if (Input.anyKey &&!Input.GetMouseButton(0))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                if(SceneManager.GetActiveScene().buildIndex == lastLvlNum)
+                    SceneManager.LoadScene(0);
+                else
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             }
         }
         //...
